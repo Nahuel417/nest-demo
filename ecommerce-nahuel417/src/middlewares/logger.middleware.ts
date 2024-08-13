@@ -12,10 +12,13 @@ export class LoggerMiddleware implements NestMiddleware {
 }
 
 export function loggerGlobal(req: Request, res: Response, next: NextFunction) {
-  const hora = new Date().toLocaleTimeString();
+  const DateIsoString = new Date().toISOString();
+  const fecha = DateIsoString.split('T')[0];
+  const horaCompleta = DateIsoString.split('T')[1];
+  const hora = horaCompleta.slice(0, 5);
 
   console.log(
-    `Estas ejecutando un metodo ${req.method} en la ruta ${req.url} global y a la hora ${hora} `,
+    `Estas ejecutando un metodo ${req.method} en la ruta "${req.url}", el dia ${fecha} y a la hora ${hora} `,
   );
   next();
 }
