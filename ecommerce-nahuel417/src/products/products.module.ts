@@ -2,7 +2,7 @@ import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { ProductsController } from './products.controller';
 import { ProductsService } from './products.service';
 import { LoggerMiddleware } from 'src/middlewares/logger.middleware';
-import { ProductsRepository } from 'src/users/users.repository';
+import { ProductsRepository } from './products.repository';
 
 @Module({
   controllers: [ProductsController],

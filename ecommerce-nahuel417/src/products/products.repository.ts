@@ -1,41 +1,67 @@
 import { Injectable } from '@nestjs/common';
+import { IProduct } from './product.interface';
 
 @Injectable()
-export class UsersRepository {
-  private users = [
+export class ProductsRepository {
+  private products = [
     {
       id: 1,
-      email: 'john.doe@example.com',
-      name: 'John Doe',
-      password: 'password123',
-      address: '123 Main St',
-      phone: '555-1234',
-      country: 'USA',
-      city: 'New York',
+      name: 'Laptop',
+      description: 'High-performance laptop with 16GB RAM and 512GB SSD.',
+      price: 1200.99,
+      stock: true,
+      imgUrl: 'https://example.com/images/laptop.jpg',
     },
     {
       id: 2,
-      email: 'jane.smith@example.com',
-      name: 'Jane Smith',
-      password: 'securePass456',
-      address: '456 Elm St',
-      phone: '555-5678',
-      country: 'Canada',
-      city: 'Toronto',
+      name: 'Smartphone',
+      description: 'Latest model smartphone with 5G connectivity.',
+      price: 899.99,
+      stock: false,
+      imgUrl: 'https://example.com/images/smartphone.jpg',
     },
     {
       id: 3,
-      email: 'mike.jones@example.com',
-      name: 'Mike Jones',
-      password: 'myPassword789',
-      address: '789 Oak St',
-      phone: '555-9876',
-      country: 'Argentina',
-      city: 'Forres',
+      name: 'Wireless Headphones',
+      description:
+        'Noise-cancelling wireless headphones with 30-hour battery life.',
+      price: 199.99,
+      stock: true,
+      imgUrl: 'https://example.com/images/headphones.jpg',
     },
   ];
 
-  async getUsers() {
-    return this.users;
+  async getProducts() {
+    return this.products;
+  }
+
+  async getProductById(id: number): Promise<IProduct | string> {
+    const producto = this.products.find((product) => product.id === id);
+
+    if (producto) return producto;
+
+    return 'No se encontro el producto';
+  }
+
+  async createProduct(product: Omit<IProduct, 'id'>) {
+    const id = this.products.length + 1;
+    this.products = [...this.products, { id, ...product }];
+    return { id, ...product };
+  }
+
+  async deleteProduct(id: number): Promise<IProduct | string> {
+    const producto = this.products.find((product) => product.id === id);
+
+    if (producto) return producto;
+
+    return 'No se encontro el producto';
+  }
+
+  async updateProduct(id: number): Promise<IProduct | string> {
+    const producto = this.products.find((product) => product.id === id);
+
+    if (producto) return producto;
+
+    return 'No se encontro el producto';
   }
 }
