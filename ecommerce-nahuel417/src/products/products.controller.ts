@@ -7,11 +7,13 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { IProduct } from './product.interface';
 import { AuthGuard } from 'src/guards/auth.guard';
+import { validateProduct } from 'src/utils/validate';
 
 @Controller('products')
 export class ProductsController {
@@ -20,8 +22,8 @@ export class ProductsController {
   //* GET *//
   @HttpCode(200)
   @Get()
-  getProducts() {
-    return this.productsService.getProducts();
+  getProducts(@Query('page') page: number, @Query('limit') limit: number) {
+    return this.productsService.getProducts(page, limit);
   }
 
   @HttpCode(200)
@@ -35,15 +37,17 @@ export class ProductsController {
   @UseGuards(AuthGuard)
   @Post()
   createProduct(@Body() product: IProduct) {
-    return this.productsService.createProduct(product);
+    if (validateProduct(product))
+      return this.productsService.createProduct(product);
+    else return 'No es un producto valido';
   }
 
   //* PUT *//
   @HttpCode(200)
   @UseGuards(AuthGuard)
   @Put(':id')
-  updateUser(@Param('id') id: string) {
-    return this.productsService.updateProduct(+id);
+  updateUser(@Param('id') id: string, @Body() updateProduct: IProduct) {
+    return this.productsService.updateProduct(+id, updateProduct);
   }
 
   //* DELETE *//

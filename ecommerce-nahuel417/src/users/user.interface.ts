@@ -5,6 +5,6 @@ export interface IUser {
   password: string;
   address: string;
   phone: string;
-  country: string | null;
-  city: string | null;
+  country?: string | undefined;
+  city?: string | undefined;
 }

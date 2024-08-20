@@ -6,23 +6,42 @@ import { IUser } from './user.interface';
 export class UsersService {
   constructor(private usersRepository: UsersRepository) {}
 
-  getUsers() {
-    return this.usersRepository.getUsers();
+  async getUsers(
+    page: number,
+    limit: number,
+  ): Promise<Omit<IUser, 'password'>[]> {
+    const allUsers = await this.usersRepository.getUsers(page, limit);
+
+    return allUsers.map(({ password, ...rest }) => rest);
   }
 
-  getUserById(id: number) {
-    return this.usersRepository.getUserById(id);
+  async getUserById(id: number): Promise<Omit<IUser, 'password'> | string> {
+    const user = await this.usersRepository.getUserById(id);
+    if (!user) {
+      return 'Usuario no encontrado';
+    }
+
+    const { password, ...rest } = user;
+
+    return rest;
   }
 
-  createUser(user: Omit<IUser, 'id'>): Promise<IUser> {
-    return this.usersRepository.createUser(user);
+  async createUser(user: Omit<IUser, 'id'>): Promise<IUser> {
+    const usuario = await this.usersRepository.createUser(user);
+
+    return usuario;
   }
 
-  updateUser(id: number) {
-    return this.usersRepository.updateUser(id);
+  async updateUser(id: number, updateUser: IUser): Promise<string | number> {
+    const user = await this.usersRepository.updateUser(id, updateUser);
+
+    return user;
   }
 
-  deleteUser(id: number) {
-    return this.usersRepository.deleteUser(id);
+  async deleteUser(id: number): Promise<number | string> {
+    const usuario = await this.usersRepository.deleteUser(id);
+    if (!usuario) return 'No se encontro el usuario';
+
+    return usuario.id;
   }
 }

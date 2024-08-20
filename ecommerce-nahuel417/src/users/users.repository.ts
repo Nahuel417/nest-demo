@@ -36,38 +36,16 @@ export class UsersRepository {
     },
   ];
 
-  async getUsers(): Promise<IUser[]> {
-    const usuarios = this.users.map((user) => ({
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      address: user.address,
-      password: '*******',
-      phone: user.phone,
-      country: user.country,
-      city: user.city,
-    }));
+  async getUsers(page: number = 1, limit: number = 5): Promise<IUser[]> {
+    const startIndex = (page - 1) * limit;
 
-    return usuarios;
+    return this.users.slice(startIndex, startIndex + limit);
   }
 
-  async getUserById(id: number): Promise<IUser | string> {
+  async getUserById(id: number): Promise<IUser> {
     const usuario = this.users.find((user) => user.id === id);
 
-    if (usuario) {
-      return {
-        id: usuario.id,
-        email: usuario.email,
-        name: usuario.name,
-        address: usuario.address,
-        password: '*******',
-        phone: usuario.phone,
-        country: usuario.country,
-        city: usuario.city,
-      };
-    }
-
-    return 'No se encontro el usuario';
+    return usuario;
   }
 
   async createUser(user: Omit<IUser, 'id'>): Promise<IUser> {
@@ -76,30 +54,32 @@ export class UsersRepository {
     return { id, ...user };
   }
 
-  async updateUser(id: number): Promise<IUser | string> {
-    const usuario = this.users.find((user) => user.id === id);
-    if (usuario) return usuario;
+  async updateUser(
+    id: number,
+    updateUser: Omit<IUser, 'id'>,
+  ): Promise<number | string> {
+    const index = this.users.findIndex((user) => user.id === id);
+    if (index === -1) return 'No se encontro el usuario';
 
-    return 'Usuario no encontrado';
+    this.users[index].name = updateUser.name;
+    this.users[index].email = updateUser.email;
+    this.users[index].address = updateUser.address;
+    this.users[index].password = updateUser.password;
+    this.users[index].city = updateUser.city;
+    this.users[index].country = updateUser.country;
+
+    return this.users[index].id;
   }
 
-  async deleteUser(id: number): Promise<IUser | string> {
+  async deleteUser(id: number): Promise<IUser> {
     const usuario = this.users.find((user) => user.id === id);
-    if (usuario) return usuario;
 
-    return 'Usuario no encontrado';
+    return usuario;
   }
 
-  async login(email: string, password: string) {
-    const usuario = this.users.find(
-      (user) => user.email === email && user.password === password,
-    );
+  async login(email: string): Promise<IUser> {
+    const usuario = this.users.find((user) => user.email === email);
 
-    if (usuario) {
-      return 'Usuario Logeado';
-    }
-
-    // // throw Error('Email o password incorrectos');
-    return 'Email o password incorrectos';
+    return usuario;
   }
 }

@@ -6,23 +6,36 @@ import { IProduct } from './product.interface';
 export class ProductsService {
   constructor(private productsRepository: ProductsRepository) {}
 
-  getProducts() {
-    return this.productsRepository.getProducts();
+  async getProducts(page: number, limit: number): Promise<IProduct[]> {
+    return await this.productsRepository.getProducts(page, limit);
   }
 
-  getProductById(id: number) {
-    return this.productsRepository.getProductById(id);
+  async getProductById(id: number): Promise<IProduct | string> {
+    const producto = await this.productsRepository.getProductById(id);
+    if (!producto) return 'No se encontro el producto';
+
+    return producto;
   }
 
-  createProduct(product: Omit<IProduct, 'id'>) {
-    return this.productsRepository.createProduct(product);
+  async createProduct(product: Omit<IProduct, 'id'>) {
+    const producto = await this.productsRepository.createProduct(product);
+
+    return producto;
   }
 
-  deleteProduct(id: number) {
-    return this.productsRepository.updateProduct(id);
+  async updateProduct(id: number, updateProduct: IProduct) {
+    const producto = await this.productsRepository.updateProduct(
+      id,
+      updateProduct,
+    );
+
+    return producto;
   }
 
-  updateProduct(id: number) {
-    return this.productsRepository.deleteProduct(id);
+  async deleteProduct(id: number): Promise<number | string> {
+    const producto = await this.productsRepository.deleteProduct(id);
+    if (!producto) return 'No se encontro el producto';
+
+    return producto.id;
   }
 }

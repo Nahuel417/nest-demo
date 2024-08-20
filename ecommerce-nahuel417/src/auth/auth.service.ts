@@ -9,7 +9,11 @@ export class AuthService {
     return 'Todos los auths';
   }
 
-  login(email: string, password: string) {
-    return this.usersRepository.login(email, password);
+  async login(email: string, password: string): Promise<string> {
+    const user = await this.usersRepository.login(email);
+    if (!user || user?.password !== password)
+      return 'Email o password incorrectos';
+
+    return 'Usuario Logeado';
   }
 }

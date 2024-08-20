@@ -1,6 +1,5 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthGuard } from 'src/guards/auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -13,10 +12,10 @@ export class AuthController {
   }
 
   //* POST *//
-  @UseGuards(AuthGuard)
+
   @Post('signin')
-  login(@Body() credentials: { email: string; password: string }) {
-    const { email, password } = credentials;
+  login(@Body('email') email: string, @Body('password') password: string) {
+    if (!email || !password) return 'Email y password son requeridos';
 
     return this.authService.login(email, password);
   }
