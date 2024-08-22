@@ -4,25 +4,25 @@ import { IUser } from './user.interface';
 
 @Injectable()
 export class UsersService {
-  constructor(private usersRepository: UsersRepository) {}
+    constructor(private usersRepository: UsersRepository) {}
 
-  getUsers() {
-    return this.usersRepository.getUsers();
-  }
+    getUsers() {
+        return this.usersRepository.getUsers();
+    }
 
-  getUserById(id: number) {
-    return this.usersRepository.getUserById(id);
-  }
+    getUserById(id: number) {
+        return this.usersRepository.getUserById(id);
+    }
 
-  createUser(user: Omit<IUser, 'id'>): Promise<IUser> {
-    return this.usersRepository.createUser(user);
-  }
+    createUser(user: Omit<IUser, 'id'>): Promise<IUser> {
+        return this.usersRepository.createUser(user);
+    }
 
-  updateUser(id: number) {
-    return this.usersRepository.updateUser(id);
-  }
+    updateUser(id: number) {
+        return this.usersRepository.updateUser(id);
+    }
 
-  deleteUser(id: number) {
-    return this.usersRepository.deleteUser(id);
-  }
+    deleteUser(id: number) {
+        return this.usersRepository.deleteUser(id);
+    }
 }
