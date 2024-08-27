@@ -3,20 +3,19 @@ import { AuthService } from './auth.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+    constructor(private readonly authService: AuthService) {}
 
-  //* GET *//
-  @Get()
-  getAuth() {
-    return this.authService.getAuth();
-  }
+    //* GET *//
+    @Get()
+    getAuth() {
+        return this.authService.getAuth();
+    }
 
-  //* POST *//
+    //* POST *//
+    @Post('signin')
+    login(@Body('email') email: string, @Body('password') password: string) {
+        if (!email || !password) return 'Email y password son requeridos';
 
-  @Post('signin')
-  login(@Body('email') email: string, @Body('password') password: string) {
-    if (!email || !password) return 'Email y password son requeridos';
-
-    return this.authService.login(email, password);
-  }
+        return this.authService.login(email, password);
+    }
 }

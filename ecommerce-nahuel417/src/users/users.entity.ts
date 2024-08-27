@@ -3,15 +3,14 @@ import {
     Column,
     Entity,
     JoinColumn,
-    ManyToOne,
+    OneToMany,
     PrimaryGeneratedColumn,
 } from 'typeorm';
-import { v4 as uuid } from 'uuid';
 
 @Entity('users')
 export class User {
     @PrimaryGeneratedColumn('uuid')
-    id: string = uuid();
+    id: string;
 
     @Column('varchar', { length: 50, nullable: false })
     name: string;
@@ -22,7 +21,7 @@ export class User {
     @Column('varchar', { length: 20, nullable: false })
     password: string;
 
-    @Column('integer')
+    @Column('int')
     phone: number;
 
     @Column('text')
@@ -34,7 +33,10 @@ export class User {
     @Column('varchar', { length: 50, nullable: true })
     city: string;
 
-    @ManyToOne(() => Order, (order) => order.user_id)
+    @Column('boolean', { default: false })
+    isAdmin: boolean;
+
+    @OneToMany(() => Order, (order) => order.user_id)
     @JoinColumn({ name: 'orders_id' })
-    orders_id: Order;
+    orders_id: Order[];
 }

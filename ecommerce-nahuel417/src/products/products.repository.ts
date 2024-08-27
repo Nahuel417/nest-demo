@@ -1,73 +1,93 @@
 import { Injectable } from '@nestjs/common';
-import { IProduct } from './product.interface';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Category } from 'src/categories/categories.entity';
+import { Product } from './products.entity';
+import * as data from 'src/utils/data.json';
 
 @Injectable()
 export class ProductsRepository {
-  private products = [
-    {
-      id: 1,
-      name: 'Laptop',
-      description: 'High-performance laptop with 16GB RAM and 512GB SSD.',
-      price: 1200.99,
-      stock: true,
-      imgUrl: 'https://example.com/images/laptop.jpg',
-    },
-    {
-      id: 2,
-      name: 'Smartphone',
-      description: 'Latest model smartphone with 5G connectivity.',
-      price: 899.99,
-      stock: false,
-      imgUrl: 'https://example.com/images/smartphone.jpg',
-    },
-    {
-      id: 3,
-      name: 'Wireless Headphones',
-      description:
-        'Noise-cancelling wireless headphones with 30-hour battery life.',
-      price: 199.99,
-      stock: true,
-      imgUrl: 'https://example.com/images/headphones.jpg',
-    },
-  ];
+    constructor(
+        @InjectRepository(Product)
+        private productsRepository: Repository<Product>,
+        @InjectRepository(Category)
+        private categoriesRepository: Repository<Category>,
+    ) {}
 
-  async getProducts(page: number = 1, limit: number = 5): Promise<IProduct[]> {
-    const startIndex = (page - 1) * limit;
+    async getProducts(page: number, limit: number): Promise<Product[]> {
+        const products = await this.productsRepository.find({
+            relations: {
+                category_id: true,
+            },
+        });
 
-    return this.products.slice(startIndex, startIndex + limit);
-  }
+        let inStock = products.filter((prod) => prod.stock > 0);
 
-  async getProductById(id: number): Promise<IProduct> {
-    const producto = this.products.find((product) => product.id === id);
+        const startIndex = (page - 1) * limit;
+        const endIndex = startIndex + limit;
 
-    return producto;
-  }
+        inStock = inStock.slice(startIndex, endIndex);
 
-  async createProduct(product: Omit<IProduct, 'id'>) {
-    const id = this.products.length + 1;
-    this.products = [...this.products, { id, ...product }];
-    return { id, ...product };
-  }
+        return inStock;
+    }
 
-  async updateProduct(
-    id: number,
-    updateProduct: Omit<IProduct, 'id'>,
-  ): Promise<number | string> {
-    const index = this.products.findIndex((product) => product.id === id);
-    if (index === -1) return 'No se encontro el producto';
+    async getProductById(id: string): Promise<Product> {
+        const producto = this.productsRepository.findOneBy({ id });
 
-    this.products[index].description = updateProduct.description;
-    this.products[index].name = updateProduct.name;
-    this.products[index].imgUrl = updateProduct.imgUrl;
-    this.products[index].price = updateProduct.price;
-    this.products[index].stock = updateProduct.stock;
+        return producto;
+    }
 
-    return this.products[index].id;
-  }
+    async addProduct() {
+        const categories = await this.categoriesRepository.find();
 
-  async deleteProduct(id: number): Promise<IProduct> {
-    const producto = this.products.find((product) => product.id === id);
+        data?.map(async (element) => {
+            const category = categories.find(
+                (category) => category.name === element.category,
+            );
 
-    return producto;
-  }
+            const producto = new Product();
+            producto.name = element.name;
+            producto.price = element.price;
+            producto.stock = element.stock;
+            producto.description = element.description;
+            producto.category_id = category;
+
+            await this.productsRepository
+                .createQueryBuilder()
+                .insert()
+                .into(Product)
+                .values(producto)
+                .orUpdate(['description', 'stock', 'price'], ['name'])
+                .execute();
+        });
+
+        return 'Productos agregados';
+    }
+
+    async createProduct(product: Product): Promise<Product> {
+        const newProduct = this.productsRepository.create({
+            name: product.name,
+            description: product.description,
+            price: product.price,
+            stock: product.stock,
+            imgUrl: product.imgUrl,
+        });
+
+        await this.productsRepository.save(newProduct);
+
+        return newProduct;
+    }
+
+    async updateProduct(
+        id: string,
+        updateProduct: Product,
+    ): Promise<string | number> {
+        const producto = await this.productsRepository.findOneBy({ id });
+        if (!producto) return 'Producto no encontrado';
+
+        Object.assign(producto, updateProduct);
+        await this.productsRepository.save(producto);
+
+        return producto.id;
+    }
 }

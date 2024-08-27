@@ -1,60 +1,61 @@
 import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  HttpCode,
-  Param,
-  Post,
-  Put,
-  Query,
-  UseGuards,
+    Body,
+    Controller,
+    Delete,
+    Get,
+    HttpCode,
+    Param,
+    Patch,
+    Post,
+    Query,
+    UseGuards,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
-import { IProduct } from './product.interface';
 import { AuthGuard } from 'src/guards/auth.guard';
 import { validateProduct } from 'src/utils/validate';
+import { Product } from './products.entity';
 
 @Controller('products')
 export class ProductsController {
-  constructor(private readonly productsService: ProductsService) {}
+    constructor(private readonly productsService: ProductsService) {}
 
-  //* GET *//
-  @HttpCode(200)
-  @Get()
-  getProducts(@Query('page') page: number, @Query('limit') limit: number) {
-    return this.productsService.getProducts(page, limit);
-  }
+    //* GET *//
+    @HttpCode(200)
+    @Get()
+    getProducts(@Query('page') page: number, @Query('limit') limit: number) {
+        if (page && limit) {
+            return this.productsService.getProducts(page, limit);
+        }
+        return this.productsService.getProducts(1, 5);
+    }
 
-  @HttpCode(200)
-  @Get(':id')
-  getProductById(@Param('id') id: string) {
-    return this.productsService.getProductById(+id);
-  }
+    @HttpCode(200)
+    @Get('seeder')
+    addProduct() {
+        return this.productsService.addProduct();
+    }
 
-  //* POST *//
-  @HttpCode(201)
-  @UseGuards(AuthGuard)
-  @Post()
-  createProduct(@Body() product: IProduct) {
-    if (validateProduct(product))
-      return this.productsService.createProduct(product);
-    else return 'No es un producto valido';
-  }
+    @HttpCode(200)
+    @Get(':id')
+    getProductById(@Param('id') id: string) {
+        return this.productsService.getProductById(id);
+    }
 
-  //* PUT *//
-  @HttpCode(200)
-  @UseGuards(AuthGuard)
-  @Put(':id')
-  updateUser(@Param('id') id: string, @Body() updateProduct: IProduct) {
-    return this.productsService.updateProduct(+id, updateProduct);
-  }
+    //* POST *//
+    @HttpCode(201)
+    @UseGuards(AuthGuard)
+    @Post()
+    createProduct(@Body() product: Product) {
+        if (validateProduct(product))
+            return this.productsService.createProduct(product);
+        else return 'No es un producto valido';
+    }
 
-  //* DELETE *//
-  @HttpCode(200)
-  @UseGuards(AuthGuard)
-  @Delete(':id')
-  deleteUser(@Param('id') id: string) {
-    return this.productsService.deleteProduct(+id);
-  }
+    //* PUT *//
+    @HttpCode(200)
+    @UseGuards(AuthGuard)
+    @Patch(':id')
+    updateUser(@Param('id') id: string, @Body() updateProduct: Product) {
+        return this.productsService.updateProduct(id, updateProduct);
+    }
 }

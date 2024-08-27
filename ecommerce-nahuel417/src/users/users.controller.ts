@@ -5,15 +5,15 @@ import {
     Get,
     HttpCode,
     Param,
+    Patch,
     Post,
-    Put,
     Query,
     UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { IUser } from './user.interface';
 import { AuthGuard } from 'src/guards/auth.guard';
 import { validateUser } from 'src/utils/validate';
+import { User } from './users.entity';
 
 @Controller('users')
 export class UsersController {
@@ -31,13 +31,13 @@ export class UsersController {
     @UseGuards(AuthGuard)
     @Get(':id')
     getUserById(@Param('id') id: string) {
-        return this.usersService.getUserById(+id);
+        return this.usersService.getUserById(id);
     }
 
     //* POST *//
     @HttpCode(201)
     @Post()
-    createUser(@Body() user: IUser) {
+    createUser(@Body() user: User) {
         if (validateUser(user)) return this.usersService.createUser(user);
         else return 'No es un usuario valido';
     }
@@ -45,16 +45,16 @@ export class UsersController {
     //* PUT *//
     @HttpCode(200)
     @UseGuards(AuthGuard)
-    @Put(':id')
-    updateUser(@Param('id') id: string, @Body() updateUser: IUser) {
-        return this.usersService.updateUser(+id, updateUser);
+    @Patch(':id')
+    updateUser(@Param('id') id: string, @Body() updateUser: User) {
+        return this.usersService.updateUser(id, updateUser);
     }
 
-    //* DELETE *//
-    @HttpCode(200)
-    @UseGuards(AuthGuard)
-    @Delete(':id')
-    deleteUser(@Param('id') id: string) {
-        return this.usersService.deleteUser(+id);
-    }
+    // //* DELETE *//
+    // @HttpCode(200)
+    // @UseGuards(AuthGuard)
+    // @Delete(':id')
+    // deleteUser(@Param('id') id: string) {
+    //     return this.usersService.deleteUser(+id);
+    // }
 }

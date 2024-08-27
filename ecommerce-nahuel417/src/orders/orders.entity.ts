@@ -4,25 +4,24 @@ import {
     Column,
     Entity,
     JoinColumn,
-    OneToMany,
+    ManyToOne,
     OneToOne,
     PrimaryGeneratedColumn,
 } from 'typeorm';
-import { v4 as uuid } from 'uuid';
 
 @Entity('orders')
 export class Order {
     @PrimaryGeneratedColumn('uuid')
-    id: string = uuid();
+    id: string;
 
     @Column('date')
-    date: string;
+    date: Date;
 
-    @OneToMany(() => User, (user) => user.orders_id)
+    @ManyToOne(() => User, (user) => user.orders_id)
     @JoinColumn({ name: 'user_id' })
     user_id: User;
 
-    @OneToOne(() => OrderDetail)
-    @JoinColumn({ name: 'orderDetails' })
+    @OneToOne(() => OrderDetail, (orderDetail) => orderDetail.order_id)
+    @JoinColumn({ name: 'order_detail_id' })
     orderDetails: OrderDetail;
 }

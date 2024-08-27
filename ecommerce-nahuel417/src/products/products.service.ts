@@ -1,41 +1,41 @@
 import { Injectable } from '@nestjs/common';
 import { ProductsRepository } from './products.repository';
-import { IProduct } from './product.interface';
+import { Product } from './products.entity';
 
 @Injectable()
 export class ProductsService {
-  constructor(private productsRepository: ProductsRepository) {}
+    constructor(private productsRepository: ProductsRepository) {}
 
-  async getProducts(page: number, limit: number): Promise<IProduct[]> {
-    return await this.productsRepository.getProducts(page, limit);
-  }
+    async getProducts(page: number, limit: number): Promise<Product[]> {
+        return await this.productsRepository.getProducts(page, limit);
+    }
 
-  async getProductById(id: number): Promise<IProduct | string> {
-    const producto = await this.productsRepository.getProductById(id);
-    if (!producto) return 'No se encontro el producto';
+    async getProductById(id: string): Promise<Product | string> {
+        const producto = await this.productsRepository.getProductById(id);
+        if (!producto) return 'No se encontro el producto';
 
-    return producto;
-  }
+        return producto;
+    }
 
-  async createProduct(product: Omit<IProduct, 'id'>) {
-    const producto = await this.productsRepository.createProduct(product);
+    async addProduct(): Promise<string> {
+        return this.productsRepository.addProduct();
+    }
 
-    return producto;
-  }
+    async createProduct(product: Product): Promise<Product> {
+        const producto = await this.productsRepository.createProduct(product);
 
-  async updateProduct(id: number, updateProduct: IProduct) {
-    const producto = await this.productsRepository.updateProduct(
-      id,
-      updateProduct,
-    );
+        return producto;
+    }
 
-    return producto;
-  }
+    async updateProduct(
+        id: string,
+        updateProduct: Product,
+    ): Promise<string | number> {
+        const producto = await this.productsRepository.updateProduct(
+            id,
+            updateProduct,
+        );
 
-  async deleteProduct(id: number): Promise<number | string> {
-    const producto = await this.productsRepository.deleteProduct(id);
-    if (!producto) return 'No se encontro el producto';
-
-    return producto.id;
-  }
+        return producto;
+    }
 }

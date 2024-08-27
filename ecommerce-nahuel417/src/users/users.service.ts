@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { UsersRepository } from './users.repository';
 import { IUser } from './user.interface';
+import { User } from './users.entity';
 
 @Injectable()
 export class UsersService {
@@ -9,13 +10,13 @@ export class UsersService {
     async getUsers(
         page: number,
         limit: number,
-    ): Promise<Omit<IUser, 'password'>[]> {
+    ): Promise<Omit<User, 'password'>[]> {
         const allUsers = await this.usersRepository.getUsers(page, limit);
 
         return allUsers.map(({ password, ...rest }) => rest);
     }
 
-    async getUserById(id: number): Promise<Omit<IUser, 'password'> | string> {
+    async getUserById(id: string): Promise<Omit<User, 'password'> | string> {
         const user = await this.usersRepository.getUserById(id);
         if (!user) {
             return 'Usuario no encontrado';
@@ -26,22 +27,22 @@ export class UsersService {
         return rest;
     }
 
-    async createUser(user: Omit<IUser, 'id'>): Promise<IUser> {
+    async createUser(user: User): Promise<User> {
         const usuario = await this.usersRepository.createUser(user);
 
         return usuario;
     }
 
-    async updateUser(id: number, updateUser: IUser): Promise<string | number> {
+    async updateUser(id: string, updateUser: User): Promise<string | number> {
         const user = await this.usersRepository.updateUser(id, updateUser);
 
         return user;
     }
 
-    async deleteUser(id: number): Promise<number | string> {
-        const usuario = await this.usersRepository.deleteUser(id);
-        if (!usuario) return 'No se encontro el usuario';
+    // async deleteUser(id: number): Promise<number | string> {
+    //     const usuario = await this.usersRepository.deleteUser(id);
+    //     if (!usuario) return 'No se encontro el usuario';
 
-        return usuario.id;
-    }
+    //     return usuario.id;
+    // }
 }

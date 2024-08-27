@@ -9,14 +9,13 @@ import {
     ManyToOne,
     PrimaryGeneratedColumn,
 } from 'typeorm';
-import { v4 as uuid } from 'uuid';
 
 @Entity('products')
 export class Product {
     @PrimaryGeneratedColumn('uuid')
-    id: string = uuid();
+    id: string;
 
-    @Column('varchar', { length: 50, nullable: false })
+    @Column('varchar', { length: 50, nullable: false, unique: true })
     name: string;
 
     @Column('text', { nullable: false })
@@ -25,17 +24,17 @@ export class Product {
     @Column('decimal', { precision: 10, scale: 2, nullable: false })
     price: number;
 
-    @Column('integer', { nullable: false })
+    @Column('int', { nullable: false })
     stock: number;
 
-    @Column('varchar', { default: 'urlAvatar' })
+    @Column('text', { default: 'urlAvatar' })
     imgUrl: string;
+
+    @ManyToMany(() => OrderDetail, (orderDetail) => orderDetail.products)
+    @JoinTable({ name: 'products_order_details' })
+    orderDetails: OrderDetail[];
 
     @ManyToOne(() => Category, (category) => category.products)
     @JoinColumn({ name: 'category_id' })
     category_id: Category;
-
-    @ManyToMany(() => OrderDetail)
-    @JoinTable()
-    orderDetails: OrderDetail[];
 }
