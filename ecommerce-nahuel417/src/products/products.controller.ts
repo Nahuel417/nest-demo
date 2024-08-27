@@ -5,6 +5,7 @@ import {
     Get,
     HttpCode,
     Param,
+    ParseUUIDPipe,
     Patch,
     Post,
     Query,
@@ -37,7 +38,7 @@ export class ProductsController {
 
     @HttpCode(200)
     @Get(':id')
-    getProductById(@Param('id') id: string) {
+    getProductById(@Param('id', ParseUUIDPipe) id: string) {
         return this.productsService.getProductById(id);
     }
 
@@ -55,7 +56,10 @@ export class ProductsController {
     @HttpCode(200)
     @UseGuards(AuthGuard)
     @Patch(':id')
-    updateUser(@Param('id') id: string, @Body() updateProduct: Product) {
+    updateUser(
+        @Param('id', ParseUUIDPipe) id: string,
+        @Body() updateProduct: Product,
+    ) {
         return this.productsService.updateProduct(id, updateProduct);
     }
 }

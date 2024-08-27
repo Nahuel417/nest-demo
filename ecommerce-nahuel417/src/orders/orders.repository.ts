@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Order } from './orders.entity';
@@ -30,12 +30,12 @@ export class OrdersRepository {
         return order;
     }
 
-    async addOrder(userId: string, products: any): Promise<string | Order[]> {
+    async addOrder(userId: string, products: any): Promise<Order[]> {
         let total = 0;
         const user = await this.usersRepository.findOneBy({ id: userId });
 
         if (!user) {
-            return 'No se encontro el usuario';
+            throw new NotFoundException('No se encontro el usuario');
         }
 
         const order = new Order();
@@ -51,7 +51,7 @@ export class OrdersRepository {
                 });
 
                 if (!product) {
-                    return 'Producto no encontrado';
+                    throw new NotFoundException('Producto no encontrado');
                 }
 
                 total += +product.price;

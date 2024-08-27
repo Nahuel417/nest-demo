@@ -18,7 +18,7 @@ export class CategoriesRepository {
             });
 
             if (!categoryExists) {
-                const newCategory = await this.categoriesRepository.create({
+                const newCategory = this.categoriesRepository.create({
                     name: product.category,
                 });
                 await this.categoriesRepository.save(newCategory);

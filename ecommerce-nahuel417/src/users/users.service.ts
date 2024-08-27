@@ -1,6 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { UsersRepository } from './users.repository';
-import { IUser } from './user.interface';
 import { User } from './users.entity';
 
 @Injectable()
@@ -19,7 +18,7 @@ export class UsersService {
     async getUserById(id: string): Promise<Omit<User, 'password'> | string> {
         const user = await this.usersRepository.getUserById(id);
         if (!user) {
-            return 'Usuario no encontrado';
+            throw new NotFoundException('Usuario no encontrado');
         }
 
         const { password, ...rest } = user;
@@ -27,13 +26,18 @@ export class UsersService {
         return rest;
     }
 
-    async createUser(user: User): Promise<User> {
+    async createUser(user: Partial<User>): Promise<Partial<User> | string> {
         const usuario = await this.usersRepository.createUser(user);
+        if (!usuario) {
+            throw new NotFoundException('Usuario no encontrado');
+        }
 
-        return usuario;
+        const { password, ...rest } = usuario;
+
+        return rest;
     }
 
-    async updateUser(id: string, updateUser: User): Promise<string | number> {
+    async updateUser(id: string, updateUser: User): Promise<string> {
         const user = await this.usersRepository.updateUser(id, updateUser);
 
         return user;

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Category } from 'src/categories/categories.entity';
@@ -37,7 +37,7 @@ export class ProductsRepository {
         return producto;
     }
 
-    async addProduct() {
+    async addProduct(): Promise<string> {
         const categories = await this.categoriesRepository.find();
 
         data?.map(async (element) => {
@@ -78,12 +78,10 @@ export class ProductsRepository {
         return newProduct;
     }
 
-    async updateProduct(
-        id: string,
-        updateProduct: Product,
-    ): Promise<string | number> {
+    async updateProduct(id: string, updateProduct: Product): Promise<string> {
         const producto = await this.productsRepository.findOneBy({ id });
-        if (!producto) return 'Producto no encontrado';
+        if (!producto)
+            throw new NotFoundException('No se encontro el producto');
 
         Object.assign(producto, updateProduct);
         await this.productsRepository.save(producto);
