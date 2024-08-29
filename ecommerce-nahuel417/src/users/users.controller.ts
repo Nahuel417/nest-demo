@@ -19,7 +19,7 @@ import { CreateUserDto } from 'src/dto/createUser.dto';
 
 @Controller('users')
 export class UsersController {
-    constructor(private readonly usersService: UsersService) {}
+    constructor(private usersService: UsersService) {}
 
     //* GET *//
     @HttpCode(200)
