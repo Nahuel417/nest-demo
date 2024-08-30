@@ -16,6 +16,7 @@ const config = {
     autoLoadEntities: true,
     synchronize: false,
     logging: true,
+    types: ['node', 'express', 'multer'],
     // dropSchema: true,
 };
 

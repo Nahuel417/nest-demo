@@ -1,18 +1,22 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Product } from 'src/products/products.entity';
-import { Repository } from 'typeorm';
+import { UploadApiResponse, v2 } from 'cloudinary';
+import toStream = require('buffer-to-stream');
 
 @Injectable()
 export class FilesRepository {
-    constructor(
-        @InjectRepository(Product)
-        private productsRepository: Repository<Product>,
-    ) {}
-
-    async uploadImage(id: string, file: Express.Multer.File) {
-        const image = file.originalname;
-
-        return `uploadImage con su id: ${id} y vino la imagen: ${image}`;
+    async uploadImage(file: Express.Multer.File): Promise<UploadApiResponse> {
+        return new Promise((resolve, reject) => {
+            const upload = v2.uploader.upload_stream(
+                { resouce_type: 'auto' },
+                (error, result) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        resolve(result);
+                    }
+                },
+            );
+            toStream(file.buffer).pipe(upload);
+        });
     }
 }

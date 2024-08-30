@@ -20,15 +20,16 @@ export class FilesController {
     constructor(private readonly filesService: FilesService) {}
 
     @HttpCode(200)
-    @UseInterceptors(FileInterceptor('image'))
+    @UseInterceptors(FileInterceptor('file'))
     @UsePipes(minSizeValidatorPipe)
     @Post('uploadImage/:id')
     uploadImage(
+        @Param('id', ParseUUIDPipe) productId: string,
         @UploadedFile(
             new ParseFilePipe({
                 validators: [
                     new MaxFileSizeValidator({
-                        maxSize: 100000,
+                        maxSize: 20000,
                         message: 'El archivo es demasiado pesado',
                     }),
                     new FileTypeValidator({
@@ -38,8 +39,7 @@ export class FilesController {
             }),
         )
         file: Express.Multer.File,
-        @Param('id', ParseUUIDPipe) id: string,
     ) {
-        return this.filesService.uploadImage(id, file);
+        return this.filesService.uploadImage(productId, file);
     }
 }
