@@ -14,7 +14,7 @@ export class OrdersRepository {
         @InjectRepository(Product)
         private productsRepository: Repository<Product>,
         @InjectRepository(OrderDetail)
-        private OrderDetailsRepository: Repository<OrderDetail>,
+        private orderDetailsRepository: Repository<OrderDetail>,
     ) {}
 
     async getOrder(id: string): Promise<Order | null> {
@@ -71,7 +71,7 @@ export class OrdersRepository {
         orderDetail.order_id = newOrder;
 
         const savedOrderDetail =
-            await this.OrderDetailsRepository.save(orderDetail);
+            await this.orderDetailsRepository.save(orderDetail);
 
         newOrder.orderDetails = savedOrderDetail;
         await this.ordersRepository.save(newOrder);
