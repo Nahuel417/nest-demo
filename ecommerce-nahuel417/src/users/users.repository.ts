@@ -6,6 +6,8 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './users.entity';
+import { CreateUserDto } from 'src/dto/createUser.dto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersRepository {
@@ -45,18 +47,44 @@ export class UsersRepository {
         return usuario.id;
     }
 
-    // async deleteUser(id: number): Promise<IUser> {
-    //     const usuario = this.users.find((user) => user.id === id);
+    async deleteUser(id: string): Promise<User> {
+        const usuario = await this.usersRepository.findOneBy({ id });
 
-    //     return usuario;
-    // }
+        return usuario;
+    }
 
-    async login(email: string, password: string): Promise<User> {
+    async findByEmail(email: string): Promise<User> {
+        const user = await this.usersRepository.findOne({ where: { email } });
+
+        return user;
+    }
+
+    async signup(user: CreateUserDto): Promise<User> {
+        const hashedPassword = await bcrypt.hash(user.password, 7);
+
+        if (!hashedPassword) {
+            throw new BadRequestException('Error en el hash de la contraseña');
+        }
+
+        const newUser = this.usersRepository.create({
+            ...user,
+            password: hashedPassword,
+        });
+
+        await this.usersRepository.save(newUser);
+
         const usuario = await this.usersRepository.findOne({
-            where: {
-                email: email,
-                password: password,
-            },
+            where: { email: user.email },
+            select: [
+                'id',
+                'name',
+                'address',
+                'city',
+                'country',
+                'email',
+                'phone',
+                'isAdmin',
+            ],
         });
 
         return usuario;

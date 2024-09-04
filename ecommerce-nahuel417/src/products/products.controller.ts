@@ -44,7 +44,6 @@ export class ProductsController {
 
     //* POST *//
     @HttpCode(201)
-    @UseGuards(AuthGuard)
     @Post()
     createProduct(@Body() product: Product) {
         if (validateProduct(product))

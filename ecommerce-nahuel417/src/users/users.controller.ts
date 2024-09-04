@@ -56,10 +56,10 @@ export class UsersController {
     }
 
     // //* DELETE *//
-    // @HttpCode(200)
-    // @UseGuards(AuthGuard)
-    // @Delete(':id')
-    // deleteUser(@Param('id') id: string) {
-    //     return this.usersService.deleteUser(+id);
-    // }
+    @HttpCode(200)
+    @UseGuards(AuthGuard)
+    @Delete(':id')
+    deleteUser(@Param('id') id: string) {
+        return this.usersService.deleteUser(id);
+    }
 }

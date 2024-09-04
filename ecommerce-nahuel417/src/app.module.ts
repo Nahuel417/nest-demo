@@ -8,6 +8,7 @@ import { CategoriesModule } from './categories/categories.module';
 import { OrdersModule } from './orders/orders.module';
 import { FilesModule } from './files/files.module';
 import typeorm from './config/typeorm';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
     imports: [
@@ -19,6 +20,11 @@ import typeorm from './config/typeorm';
             inject: [ConfigService],
             useFactory: (configService: ConfigService) =>
                 configService.get('typeorm'),
+        }),
+        JwtModule.register({
+            global: true,
+            secret: process.env.JWT_SECRET,
+            signOptions: { expiresIn: '60m' },
         }),
         UsersModule,
         ProductsModule,

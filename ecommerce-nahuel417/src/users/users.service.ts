@@ -43,10 +43,10 @@ export class UsersService {
         return user;
     }
 
-    // async deleteUser(id: number): Promise<number | string> {
-    //     const usuario = await this.usersRepository.deleteUser(id);
-    //     if (!usuario) return 'No se encontro el usuario';
+    async deleteUser(id: string): Promise<string> {
+        const usuario = await this.usersRepository.deleteUser(id);
+        if (!usuario) throw new NotFoundException('Usuario no encontrado');
 
-    //     return usuario.id;
-    // }
+        return `usuario eliminado con el id: ${usuario.id}`;
+    }
 }

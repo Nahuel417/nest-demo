@@ -1,4 +1,3 @@
-import { PickType } from '@nestjs/swagger';
 import {
     IsEmail,
     IsNotEmpty,
@@ -29,6 +28,10 @@ export class CreateUserDto {
     })
     @Length(8, 15)
     password: string;
+
+    @IsNotEmpty()
+    @IsString()
+    confirmPassword: string;
 
     @IsNotEmpty()
     @Length(3, 80)
