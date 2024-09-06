@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { UsersRepository } from './users.repository';
 import { User } from './users.entity';
+import { EditUserDto } from 'src/dto/editUser.dto';
 
 @Injectable()
 export class UsersService {
@@ -15,7 +16,7 @@ export class UsersService {
         return allUsers.map(({ password, ...rest }) => rest);
     }
 
-    async getUserById(id: string): Promise<Omit<User, 'password'> | string> {
+    async getUserById(id: string) {
         const user = await this.usersRepository.getUserById(id);
         if (!user) {
             throw new NotFoundException('Usuario no encontrado');
@@ -37,7 +38,10 @@ export class UsersService {
         return rest;
     }
 
-    async updateUser(id: string, updateUser: User): Promise<string> {
+    async updateUser(
+        id: string,
+        updateUser: EditUserDto,
+    ): Promise<string | User> {
         const user = await this.usersRepository.updateUser(id, updateUser);
 
         return user;

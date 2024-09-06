@@ -1,7 +1,6 @@
 import {
     IsBoolean,
     IsEmail,
-    IsNotEmpty,
     IsNumber,
     IsOptional,
     IsString,
@@ -9,17 +8,17 @@ import {
     Length,
 } from 'class-validator';
 
-export class CreateUserDto {
-    @IsNotEmpty()
+export class EditUserDto {
+    @IsOptional()
     @IsString()
     @Length(3, 80)
     name: string;
 
-    @IsNotEmpty()
+    @IsOptional()
     @IsEmail()
     email: string;
 
-    @IsNotEmpty()
+    @IsOptional()
     @IsString()
     @IsStrongPassword({
         minLowercase: 1,
@@ -30,15 +29,11 @@ export class CreateUserDto {
     @Length(8, 15)
     password: string;
 
-    @IsNotEmpty()
-    @IsString()
-    confirmPassword: string;
-
-    @IsNotEmpty()
+    @IsOptional()
     @Length(3, 80)
     address: string;
 
-    @IsNotEmpty()
+    @IsOptional()
     @IsNumber()
     phone: number;
 

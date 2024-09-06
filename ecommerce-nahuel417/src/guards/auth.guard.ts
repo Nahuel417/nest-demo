@@ -1,5 +1,4 @@
 import {
-    BadRequestException,
     CanActivate,
     ExecutionContext,
     Injectable,
@@ -31,6 +30,14 @@ export class AuthGuard implements CanActivate {
             const user = this.jwtService.verify(token, { secret });
             user.exp = new Date(user.exp * 1000);
             user.iat = new Date(user.iat * 1000);
+            request.user = user;
+
+            if (user.isAdmin) {
+                user.roles = ['ADMIN'];
+            } else {
+                user.roles = ['USER'];
+            }
+
             request.user = user;
 
             return true;

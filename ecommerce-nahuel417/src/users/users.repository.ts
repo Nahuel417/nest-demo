@@ -8,6 +8,7 @@ import { Repository } from 'typeorm';
 import { User } from './users.entity';
 import { CreateUserDto } from 'src/dto/createUser.dto';
 import * as bcrypt from 'bcrypt';
+import { EditUserDto } from 'src/dto/editUser.dto';
 
 @Injectable()
 export class UsersRepository {
@@ -37,14 +38,17 @@ export class UsersRepository {
         return newUser;
     }
 
-    async updateUser(id: string, updateUser: User): Promise<string> {
+    async updateUser(
+        id: string,
+        updateUser: EditUserDto,
+    ): Promise<string | User> {
         const usuario = await this.usersRepository.findOneBy({ id });
         if (!usuario) throw new NotFoundException('Usuario no encontrado');
 
         Object.assign(usuario, updateUser);
         await this.usersRepository.save(usuario);
 
-        return usuario.id;
+        return usuario;
     }
 
     async deleteUser(id: string): Promise<User> {
@@ -83,7 +87,6 @@ export class UsersRepository {
                 'country',
                 'email',
                 'phone',
-                'isAdmin',
             ],
         });
 

@@ -15,6 +15,9 @@ import { ProductsService } from './products.service';
 import { AuthGuard } from 'src/guards/auth.guard';
 import { validateProduct } from 'src/utils/validate';
 import { Product } from './products.entity';
+import { Roles } from 'src/decorators/roles.decorator';
+import { Role } from 'src/auth/roles.enum';
+import { RolesGuard } from 'src/guards/roles.guard';
 
 @Controller('products')
 export class ProductsController {
@@ -51,10 +54,11 @@ export class ProductsController {
         else return 'No es un producto valido';
     }
 
-    //* PUT *//
-    @HttpCode(200)
-    @UseGuards(AuthGuard)
+    //* PATCH *//
     @Patch(':id')
+    @Roles(Role.admin)
+    @UseGuards(AuthGuard, RolesGuard)
+    @HttpCode(200)
     updateUser(
         @Param('id', ParseUUIDPipe) id: string,
         @Body() updateProduct: Product,

@@ -16,15 +16,20 @@ import { AuthGuard } from 'src/guards/auth.guard';
 import { validateUser } from 'src/utils/validate';
 import { User } from './users.entity';
 import { CreateUserDto } from 'src/dto/createUser.dto';
+import { Roles } from 'src/decorators/roles.decorator';
+import { Role } from 'src/auth/roles.enum';
+import { RolesGuard } from 'src/guards/roles.guard';
+import { EditUserDto } from 'src/dto/editUser.dto';
 
 @Controller('users')
 export class UsersController {
     constructor(private usersService: UsersService) {}
 
     //* GET *//
-    @HttpCode(200)
-    @UseGuards(AuthGuard)
     @Get()
+    @Roles(Role.admin)
+    @UseGuards(AuthGuard, RolesGuard)
+    @HttpCode(200)
     getUsers(@Query('page') page: number, @Query('limit') limit: number) {
         return this.usersService.getUsers(page, limit);
     }
@@ -44,13 +49,13 @@ export class UsersController {
         else return 'No es un usuario valido';
     }
 
-    //* PUT *//
+    //* PATCH *//
     @HttpCode(200)
     @UseGuards(AuthGuard)
     @Patch(':id')
     updateUser(
         @Param('id', ParseUUIDPipe) id: string,
-        @Body() updateUser: User,
+        @Body() updateUser: EditUserDto,
     ) {
         return this.usersService.updateUser(id, updateUser);
     }
