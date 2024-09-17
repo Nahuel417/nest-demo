@@ -16,16 +16,19 @@ import { FilesService } from './files.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { minSizeValidatorPipe } from 'src/pipes/minSizeValidator.pipe';
 import { AuthGuard } from 'src/guards/auth.guard';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('files ')
 @Controller('files')
 export class FilesController {
     constructor(private readonly filesService: FilesService) {}
 
+    @ApiBearerAuth()
+    @Post('uploadImage/:id')
     @HttpCode(200)
     @UseGuards(AuthGuard)
     @UseInterceptors(FileInterceptor('file'))
     @UsePipes(minSizeValidatorPipe)
-    @Post('uploadImage/:id')
     uploadImage(
         @Param('id', ParseUUIDPipe) productId: string,
         @UploadedFile(
