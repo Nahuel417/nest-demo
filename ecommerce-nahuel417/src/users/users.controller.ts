@@ -14,18 +14,22 @@ import {
 import { UsersService } from './users.service';
 import { AuthGuard } from 'src/guards/auth.guard';
 import { validateUser } from 'src/utils/validate';
-import { User } from './users.entity';
 import { CreateUserDto } from 'src/dto/createUser.dto';
 import { Roles } from 'src/decorators/roles.decorator';
 import { Role } from 'src/auth/roles.enum';
 import { RolesGuard } from 'src/guards/roles.guard';
 import { EditUserDto } from 'src/dto/editUser.dto';
+import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('users')
 @Controller('users')
 export class UsersController {
     constructor(private usersService: UsersService) {}
 
     //* GET *//
+    @ApiBearerAuth()
+    @ApiQuery({ name: 'page', required: false })
+    @ApiQuery({ name: 'limit', required: false })
     @Get()
     @Roles(Role.admin)
     @UseGuards(AuthGuard, RolesGuard)
@@ -34,9 +38,10 @@ export class UsersController {
         return this.usersService.getUsers(page, limit);
     }
 
+    @ApiBearerAuth()
+    @Get(':id')
     @HttpCode(200)
     @UseGuards(AuthGuard)
-    @Get(':id')
     getUserById(@Param('id', ParseUUIDPipe) id: string) {
         return this.usersService.getUserById(id);
     }
@@ -50,9 +55,10 @@ export class UsersController {
     }
 
     //* PATCH *//
+    @ApiBearerAuth()
+    @Patch(':id')
     @HttpCode(200)
     @UseGuards(AuthGuard)
-    @Patch(':id')
     updateUser(
         @Param('id', ParseUUIDPipe) id: string,
         @Body() updateUser: EditUserDto,
@@ -61,9 +67,10 @@ export class UsersController {
     }
 
     // //* DELETE *//
+    @ApiBearerAuth()
+    @Delete(':id')
     @HttpCode(200)
     @UseGuards(AuthGuard)
-    @Delete(':id')
     deleteUser(@Param('id') id: string) {
         return this.usersService.deleteUser(id);
     }

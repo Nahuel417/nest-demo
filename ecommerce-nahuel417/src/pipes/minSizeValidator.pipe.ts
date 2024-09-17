@@ -11,7 +11,7 @@ export class minSizeValidatorPipe implements PipeTransform {
         const minSize = 10000;
 
         if (value.size < minSize)
-            throw new BadRequestException('El archivo es demasiado liviano');
+            throw new BadRequestException('El archivo es demasiado liviano.');
 
         return value;
     }
