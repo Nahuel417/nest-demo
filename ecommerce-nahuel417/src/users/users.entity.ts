@@ -33,7 +33,7 @@ export class User {
     @Column('varchar', { length: 50, nullable: true })
     city: string;
 
-    @Column('boolean', { default: false })
+    @Column('boolean', { default: false, nullable: true })
     isAdmin: boolean;
 
     @OneToMany(() => Order, (order) => order.user_id)
