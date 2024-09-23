@@ -9,11 +9,13 @@ services:
             - postgresdb
 
     postgresdb:
-        image: postgres
-        volumes:
-            - pgdata:/var/lib/postgresql/data
+        image: postgres:latest
         env_file:
             - .env.development
-
+        volumes:
+            - pgdata:/var/lib/postgresql/data
+            # - /e/PostgreSQL/15/data:/var/lib/postgresql/data
+        ports:
+            - '5432:5432'
 volumes:
     pgdata:
