@@ -2,7 +2,7 @@ FROM node:18
 
 WORKDIR ./ecommerce-nahuel417
 
-COPY package*.json ./
+COPY package.json package-lock.json ./
 
 RUN npm install
 
