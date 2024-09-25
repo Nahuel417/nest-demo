@@ -1,6 +1,6 @@
 FROM node:18
 
-WORKDIR ./ecommerce-nahuel417
+WORKDIR /ecommerce-nahuel417
 
 COPY package.json package-lock.json ./
 
