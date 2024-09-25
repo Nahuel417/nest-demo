@@ -16,5 +16,14 @@ services:
             - pgdata:/var/lib/postgresql/data
         env_file:
             - .env.development
+
+    migrate:
+        build: ./
+        command: npm run migration:run
+        env_file:
+            - .env.development
+        depends_on:
+            - postgresdb
+
 volumes:
     pgdata:
