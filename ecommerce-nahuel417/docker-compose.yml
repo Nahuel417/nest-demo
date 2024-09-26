@@ -2,7 +2,8 @@ version: '3.8'
 
 services:
     nestapp:
-        iamge: nahuel417/nest-demo:latest
+        image: nahuel417/nest-demo:latest
+        build: .
         ports:
             - '3000:3000'
         env_file:
@@ -16,14 +17,6 @@ services:
             - pgdata:/var/lib/postgresql/data
         env_file:
             - .env.development
-
-    migrate:
-        build: ./
-        command: npm run migration:run
-        env_file:
-            - .env.development
-        depends_on:
-            - postgresdb
 
 volumes:
     pgdata:
