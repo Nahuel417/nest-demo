@@ -1,7 +1,7 @@
 import { registerAs } from '@nestjs/config';
 import { config as dotenvConfig } from 'dotenv';
-import { join } from 'path';
 import { DataSource, DataSourceOptions } from 'typeorm';
+// import { join } from 'path';
 
 dotenvConfig({ path: '.env.development' });
 
@@ -12,12 +12,12 @@ const config = {
     username: `${process.env.DB_USERNAME}`,
     password: `${process.env.DB_PASSWORD}`,
     database: `${process.env.DB_NAME}`,
-    // entities: ['dist/**/*.entity{.ts,.js}'],
-    // migrations: ['dist/migrations/*{.ts,.js}'],
-    entities: [join(__dirname, '**', '*.entity{.ts,.js}')],
-    migrations: [join(__dirname, 'migrations', '*{.js,.ts}')],
+    entities: ['dist/**/*.entity{.ts,.js}'],
+    migrations: ['dist/migrations/*{.ts,.js}'],
+    // entities: [join(__dirname, '**', '*.entity{.ts,.js}')],
+    // migrations: [join(__dirname, 'migrations', '*{.js,.ts}')],
     autoLoadEntities: true,
-    synchronize: false,
+    synchronize: true,
     logging: true,
     types: ['node', 'express', 'multer'],
     // dropSchema: true,
