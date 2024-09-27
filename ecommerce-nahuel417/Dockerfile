@@ -1,8 +1,8 @@
-FROM node
+FROM node:18
 
-WORKDIR /app
+WORKDIR /ecommerce-nahuel417
 
-COPY package*.json ./
+COPY ./ecommerce-nahuel417/package.json ./ecommerce-nahuel417/package-lock.json ./
 
 RUN npm install
 
