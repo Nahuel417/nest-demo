@@ -61,6 +61,7 @@ export class CreateUserDto {
         required: true,
         example: 'example230',
     })
+    @IsString()
     @IsNotEmpty()
     @Length(3, 80)
     address: string;

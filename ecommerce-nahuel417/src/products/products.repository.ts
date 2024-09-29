@@ -64,7 +64,7 @@ export class ProductsRepository {
         return 'Productos agregados';
     }
 
-    async createProduct(product: Product): Promise<Product> {
+    async createProduct(product: Partial<Product>): Promise<Product> {
         const newProduct = this.productsRepository.create({
             name: product.name,
             description: product.description,

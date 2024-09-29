@@ -22,7 +22,7 @@ export class ProductsService {
         return this.productsRepository.addProduct();
     }
 
-    async createProduct(product: Product): Promise<Product> {
+    async createProduct(product: Partial<Product>): Promise<Product> {
         const producto = await this.productsRepository.createProduct(product);
 
         return producto;

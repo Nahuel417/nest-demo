@@ -50,10 +50,12 @@ export class ProductsController {
     //* POST *//
     @HttpCode(201)
     @Post()
-    createProduct(@Body() product: Product) {
-        if (validateProduct(product))
+    createProduct(@Body() product: Partial<Product>) {
+        if (validateProduct(product)) {
             return this.productsService.createProduct(product);
-        else return 'No es un producto valido';
+        } else {
+            return 'No es un producto valido';
+        }
     }
 
     //* PATCH *//
